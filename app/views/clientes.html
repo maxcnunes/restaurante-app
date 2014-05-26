@@ -1,0 +1,60 @@
+<form role="form">
+  <div class="row">
+    <div class="col-xs-8">
+      <div class="form-group">
+        <label for="nome">Nome</label>
+        <input type="text" class="form-control" id="nome">
+      </div>
+    </div>
+    <div class="col-xs-4">
+      <div class="form-group">
+        <label for="telefone">Telefone</label>
+        <input type="text" class="form-control phone" id="telefone">
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-4">
+      <div class="form-group">
+        <label for="bairro">Bairro</label>
+        <input type="text" class="form-control typeahead" id="bairro">
+      </div>
+    </div>
+    <div class="col-xs-4">
+      <div class="form-group">
+        <label for="rua">Rua</label>
+        <input type="text" class="form-control typeahead" id="rua">
+      </div>
+    </div>
+    <div class="col-xs-2">
+      <div class="form-group">
+        <label for="numero">Número</label>
+        <input type="text" class="form-control" id="numero">
+      </div>
+    </div>
+    <div class="col-xs-2">
+      <div class="form-group">
+        <label for="valor">Valor Frete</label>
+        <input type="text" class="form-control money" id="valor">
+      </div>
+    </div>
+  </div>
+  <button class="btn btn-default" id="search">Pesquisar</button>
+  <button class="btn btn-success" id="save">Inserir</button>
+  <button class="btn btn-danger" id="cancel">Cancelar</button>
+</form>
+
+<table id="result" class="table table-hover">
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Telefone</th>
+      <th>Bairro</th>
+      <th>Rua</th>
+      <th>Número</th>
+      <th>Frete</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>

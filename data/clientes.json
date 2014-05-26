@@ -1,0 +1,29 @@
+[
+  {
+    "nome": "1",
+    "telefone": "1",
+    "bairro": "1",
+    "rua": "1",
+    "numero": "321",
+    "valor": "1",
+    "id": "a5faee9b-8846-4479-9011-db46c07befcf"
+  },
+  {
+    "nome": "test",
+    "telefone": "1111-1111",
+    "bairro": "bairro 1",
+    "rua": "rua 1",
+    "numero": "123",
+    "valor": "12,34",
+    "id": "0e125f0c-4988-407a-a8bf-62751a8f03aa"
+  },
+  {
+    "nome": "Joao Silva",
+    "telefone": "1878-1728",
+    "bairro": "bairro 1",
+    "rua": "",
+    "numero": "",
+    "valor": "10.45",
+    "id": "9e3d3570-b846-46a6-8394-41d7e38f56c4"
+  }
+]

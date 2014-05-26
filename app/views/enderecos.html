@@ -1,0 +1,37 @@
+<form role="form">
+  <div class="row">
+    <div class="col-xs-5">
+      <div class="form-group">
+        <label for="bairro">Bairro</label>
+        <input type="text" class="form-control" id="bairro">
+      </div>
+    </div>
+    <div class="col-xs-5">
+      <div class="form-group">
+        <label for="rua">Rua</label>
+        <input type="text" class="form-control" id="rua">
+      </div>
+    </div>
+    <div class="col-xs-2">
+      <div class="form-group">
+        <label for="valor">Valor Frete</label>
+        <input type="text" class="form-control money" id="valor">
+      </div>
+    </div>
+  </div>
+  <button class="btn btn-default" id="search">Pesquisar</button>
+  <button class="btn btn-success" id="save">Inserir</button>
+  <button class="btn btn-danger" id="cancel">Cancelar</button>
+</form>
+
+<table id="result" class="table table-hover">
+  <thead>
+    <tr>
+      <th>Bairro</th>
+      <th>Rua</th>
+      <th>Frete</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>

@@ -1,0 +1,14 @@
+[
+  {
+    "bairro": "bairro 1",
+    "rua": "rua 1",
+    "valor": "10.45",
+    "id": "a9f12292-7a69-4a82-9013-14c1d0c8bc8a"
+  },
+  {
+    "bairro": "bairro 2",
+    "rua": "rua 2",
+    "valor": "10.00",
+    "id": "16cdcad4-1325-47e8-bdb5-0c63bcd69c5c"
+  }
+]

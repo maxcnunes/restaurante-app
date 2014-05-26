@@ -1,0 +1,16 @@
+{
+  "name": "restaurante-app",
+  "main": "app/views/index.html",
+  "window": {
+    "toolbar": true,
+    "frame": true,
+    "width": 1000,
+    "height": 600,
+    "position": "mouse",
+    "min_width": 600,
+    "min_height": 600
+  },
+  "dependencies": {
+    "node-uuid": "^1.4.1"
+  }
+}
