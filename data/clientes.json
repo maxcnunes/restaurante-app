@@ -59,5 +59,13 @@
     "rua": "3343",
     "numero": "3434",
     "id": "3037a470-9a43-4b64-bf3a-ef4f806e8b99"
+  },
+  {
+    "nome": "Marcia",
+    "telefone": "1221-2334",
+    "bairro_id": "ebcd8983-a14e-441b-ab11-82fc397daf77",
+    "rua": "Rua 2",
+    "numero": "123",
+    "id": "c149bdee-21ff-4d08-b245-b4c95f32bd4d"
   }
 ]

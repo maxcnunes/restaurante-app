@@ -33,5 +33,10 @@
     "bairro": "bairro 7",
     "valor": "12,23",
     "id": "79f4ecef-daab-48c7-a187-8bc7cd0c90e5"
+  },
+  {
+    "bairro": "Bairro 8",
+    "valor": "45,67",
+    "id": "ebcd8983-a14e-441b-ab11-82fc397daf77"
   }
 ]

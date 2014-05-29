@@ -57,7 +57,13 @@ var appModelCliente = function () {
   }
 
   function validate (cliente) {
-    if ((!cliente.bairro && !cliente.rua) || !cliente.valor) return false;
+    if (!cliente.bairro || 
+        !cliente.rua || 
+        !cliente.nome || 
+        !cliente.telefone || 
+        !cliente.numero || 
+        !cliente.valor
+        ) return false;
     return true;
   }
 
@@ -84,10 +90,16 @@ var appModelCliente = function () {
     return function where (data) {
       var pattBairro = new RegExp(cliente.bairro, 'i');
       var pattRua = new RegExp(cliente.rua, 'i');
+      var pattNome = new RegExp(cliente.nome, 'i');
+      var pattTelefone = new RegExp(cliente.telefone, 'i');
+      var pattNumero = new RegExp(cliente.numero, 'i');
       var pattValor = new RegExp(cliente.valor, 'i');
 
       if (cliente.bairro && !pattBairro.test(data.bairro)) return false;
       if (cliente.rua && !pattRua.test(data.rua)) return false;
+      if (cliente.nome && !pattNome.test(data.nome)) return false;
+      if (cliente.telefone && !pattTelefone.test(data.telefone)) return false;
+      if (cliente.numero && !pattNumero.test(data.numero)) return false;
       if (cliente.valor && !pattValor.test(data.valor)) return false;
       
       return true;
