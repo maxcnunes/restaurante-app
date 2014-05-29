@@ -11,7 +11,15 @@ var appCommon = function () {
     return html.join('');
   }
 
+  function action (cmd) {
+    return function (event) {
+      event.preventDefault();
+      return cmd.call(this);
+    };
+  }
+
   return {
-    buildEditRemoveButtons: buildEditRemoveButtons
+    buildEditRemoveButtons: buildEditRemoveButtons,
+    action: action
   };
 };

@@ -3,7 +3,10 @@ var app = {
   common: appCommon(),
   db: appDB(),
   clientes: appClientes(),
-  enderecos: appEnderecos()
+  enderecos: appEnderecos(),
+  models: {
+    bairro: appModelBairro()
+  }
 };
 
 var routes = {

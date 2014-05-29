@@ -2,11 +2,11 @@ var appEnderecos = function () {
   var selectedItem;
 
   function setupEvents () {
-    $('form').on('click', '#save', save);
-    $('form').on('click', '#cancel', cancel);
-    $('form').on('click', '#search', search);
-    $('table').on('click', '.edit-item', edit);
-    $('table').on('click', '.remove-item', remove);
+    $('form').on('click', '#save', app.common.action(save));
+    $('form').on('click', '#cancel', app.common.action(cancel));
+    $('form').on('click', '#search', app.common.action(search));
+    $('table').on('click', '.edit-item', app.common.action(edit));
+    $('table').on('click', '.remove-item', app.common.action(remove));
   }
 
   function init () {
@@ -14,60 +14,32 @@ var appEnderecos = function () {
     load();
   }
 
-  function load () {
-    app.db.loadData('enderecos', function (err, data) {
-      if (err) return;
-
-      loadTable(data);
-    });
+  function load (err) {
+    if (err) return console.log(err);
+    app.models.bairro.getAll(loadTable);
   }
 
-  function loadTable (data) {
+  function loadTable (err, data) {
+    if (err) return console.log(err);
+
     $('table#result tbody').html('');
     data.forEach(function (item) {
       $('table#result tbody').append(buildEnderecoRow(item));
     });
   }
 
-  function save (event) {
-    event.preventDefault();
-
-    var endereco = getItemFromForm();
-
-    if (!validate(endereco)) {
-      alert('Campos inválidos');
-      return;
-    }
-
-    var onSave = function (err) {
-      if (err) return console.log(err);
+  function save () {
+    app.models.bairro.save(getItemFromForm(), selectedItem, function (err) {
+      if (err) return alert(err);
 
       load();
       cleanForm();
       changeButtonSaveType();
-    };
-
-    if (!selectedItem) 
-      app.db.create(endereco, 'enderecos', onSave);
-    else
-      app.db.update(selectedItem.id, endereco, 'enderecos', onSave);
-  }
-
-  function validate (endereco) {
-    if ((!endereco.bairro) || !endereco.valor) return false;
-    return true;
-  }
-
-  function search (event) {
-    event.preventDefault();
-
-    var searchTerm = buildSearchTerm();
-
-    app.db.filter(searchTerm, 'enderecos', function (err, data) {
-      if (err) return;
-
-      loadTable(data);
     });
+  }
+
+  function search () {
+    app.models.bairro.find(getItemFromForm(), loadTable);
   }
 
   function getItemFromForm () {
@@ -79,14 +51,12 @@ var appEnderecos = function () {
     };
   }
 
-  function cancel (event) {
-    event.preventDefault();
+  function cancel () {
     cleanForm();
     changeButtonSaveType();
   }
 
-  function edit (event) {
-    event.preventDefault();
+  function edit () {
     var btn = $(this);
 
     getSelectedItem(btn);
@@ -100,17 +70,12 @@ var appEnderecos = function () {
   }
 
   function remove () {
-    event.preventDefault();
     var btn = $(this);
 
     getSelectedItem(btn);
     
     if (confirm('Deseja remover este item?')) {
-      app.db.remove(selectedItem.id, 'enderecos', function (err) {
-        if (err) return console.log(err);
-
-        load();
-      });
+      app.models.bairro.remove(selectedItem, load);
     }
   }
 
@@ -121,20 +86,6 @@ var appEnderecos = function () {
       id: tr.find('.id').val(),
       bairro: tr.find('.bairro').text(),
       valor: tr.find('.valor').text().match(/R\$ (.*)/i)[1]
-    };
-  }
-
-  function buildSearchTerm () {
-    var endereco = getItemFromForm();
-
-    return function where (data) {
-      var pattBairro = new RegExp(endereco.bairro, 'i');
-      var pattValor = new RegExp(endereco.valor, 'i');
-
-      if (endereco.bairro && !pattBairro.test(data.bairro)) return false;
-      if (endereco.valor && !pattValor.test(data.valor)) return false;
-      
-      return true;
     };
   }
 

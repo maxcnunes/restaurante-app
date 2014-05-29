@@ -8,5 +8,15 @@
     "bairro": "bairro 2",
     "valor": "10.00",
     "id": "16cdcad4-1325-47e8-bdb5-0c63bcd69c5c"
+  },
+  {
+    "bairro": "bairro 3",
+    "valor": "11,32",
+    "id": "c102db6e-5d05-4af4-b68a-2389b81c262a"
+  },
+  {
+    "bairro": "bairro 4",
+    "valor": "11,25",
+    "id": "131161ba-d5c8-440e-a212-e4e00e089417"
   }
 ]
