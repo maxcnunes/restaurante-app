@@ -2,7 +2,7 @@
   {
     "nome": "1",
     "telefone": "1",
-    "bairro": "1",
+    "bairro_id": "16cdcad4-1325-47e8-bdb5-0c63bcd69c5c",
     "rua": "1",
     "numero": "321",
     "valor": "1",
@@ -11,7 +11,7 @@
   {
     "nome": "test",
     "telefone": "1111-1111",
-    "bairro": "bairro 1",
+    "bairro_id": "16cdcad4-1325-47e8-bdb5-0c63bcd69c5c",
     "rua": "rua 1",
     "numero": "123",
     "valor": "12,34",
@@ -20,10 +20,37 @@
   {
     "nome": "Joao Silva",
     "telefone": "1878-1728",
-    "bairro": "bairro 1",
+    "bairro_id": "16cdcad4-1325-47e8-bdb5-0c63bcd69c5c",
     "rua": "",
     "numero": "",
     "valor": "10.45",
     "id": "9e3d3570-b846-46a6-8394-41d7e38f56c4"
+  },
+  {
+    "nome": "Maria",
+    "telefone": "1212-1212",
+    "bairro_id": "16cdcad4-1325-47e8-bdb5-0c63bcd69c5c",
+    "rua": "Rua 2",
+    "numero": "12",
+    "valor": "10.00",
+    "id": "f2e9dd59-bc4b-4fd8-a594-9c9ea30c3654"
+  },
+  {
+    "nome": "Jack",
+    "telefone": "2323-2323",
+    "bairro_id": "16cdcad4-1325-47e8-bdb5-0c63bcd69c5c",
+    "rua": "Tiete",
+    "numero": "13",
+    "valor": "10.00",
+    "id": "26fd6b44-cde4-4877-b94d-87ea0b6f8a36"
+  },
+  {
+    "nome": "Ed",
+    "telefone": "8978-9787",
+    "bairro_id": "a9f12292-7a69-4a82-9013-14c1d0c8bc8a",
+    "rua": "Ave",
+    "numero": "87",
+    "valor": "10.45",
+    "id": "fdd1e6f7-461e-48f8-9fc3-4ebab75f9d33"
   }
 ]

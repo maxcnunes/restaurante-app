@@ -54,7 +54,7 @@ var appEnderecos = function () {
   }
 
   function validate (endereco) {
-    if ((!endereco.bairro && !endereco.rua) || !endereco.valor) return false;
+    if ((!endereco.bairro) || !endereco.valor) return false;
     return true;
   }
 
@@ -75,7 +75,6 @@ var appEnderecos = function () {
 
     return {
       bairro: form.find('#bairro').val(),
-      rua: form.find('#rua').val(),
       valor: form.find('#valor').val()
     };
   }
@@ -95,7 +94,6 @@ var appEnderecos = function () {
     var form = $('form');
 
     form.find('#bairro').val(selectedItem.bairro);
-    form.find('#rua').val(selectedItem.rua);
     form.find('#valor').val(selectedItem.valor);
 
     changeButtonSaveType();
@@ -122,7 +120,6 @@ var appEnderecos = function () {
     selectedItem = {
       id: tr.find('.id').val(),
       bairro: tr.find('.bairro').text(),
-      rua: tr.find('.rua').text(),
       valor: tr.find('.valor').text().match(/R\$ (.*)/i)[1]
     };
   }
@@ -132,11 +129,9 @@ var appEnderecos = function () {
 
     return function where (data) {
       var pattBairro = new RegExp(endereco.bairro, 'i');
-      var pattRua = new RegExp(endereco.rua, 'i');
       var pattValor = new RegExp(endereco.valor, 'i');
 
       if (endereco.bairro && !pattBairro.test(data.bairro)) return false;
-      if (endereco.rua && !pattRua.test(data.rua)) return false;
       if (endereco.valor && !pattValor.test(data.valor)) return false;
       
       return true;
@@ -152,7 +147,6 @@ var appEnderecos = function () {
     var html = [];
     html.push('<tr>');
     html.push('  <td class="bairro">' + data.bairro + '</td>');
-    html.push('  <td class="rua">' + data.rua + '</td>');
     html.push('  <td class="valor">R$ ' + data.valor + '</td>');
     html.push('  <td>');
     html.push('    <input type="hidden" class="id" value="' + data.id + '" />');

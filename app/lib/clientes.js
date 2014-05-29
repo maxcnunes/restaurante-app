@@ -7,7 +7,7 @@ var appClientes = function () {
     $('form').on('click', '#search', search);
     $('table').on('click', '.edit-item', edit);
     $('table').on('click', '.remove-item', remove);
-    $('form').on('blur', '#bairro, #rua', loadFrete);
+    $('form').on('blur', '#bairro', loadFrete);
   }
 
   function init () {
@@ -20,7 +20,24 @@ var appClientes = function () {
     app.db.loadData('clientes', function (err, data) {
       if (err) return;
 
-      loadTable(data);
+      loadBairros(function (err, bairros) {
+        if (err) console.log(err);
+
+        mapBairroOnCliente(data, bairros);
+        loadTable(data);
+      });
+    });
+  }
+
+  function mapBairroOnCliente (clientes, bairros) {
+    clientes.map(function (cliente) {
+      bairros.forEach(function (bairro) {
+        if (cliente.bairro_id === bairro.id) {
+          cliente.bairro = bairro.bairro;
+          return;
+        }
+      });
+      return cliente;
     });
   }
 
@@ -40,6 +57,9 @@ var appClientes = function () {
       alert('Campos inválidos');
       return;
     }
+
+    // we do not store bairro's name, only bairro's id
+    delete cliente.bairro;
 
     var onSave = function (err) {
       if (err) return console.log(err);
@@ -79,6 +99,7 @@ var appClientes = function () {
       nome: form.find('#nome').val(),
       telefone: form.find('#telefone').val(),
       bairro: form.find('#bairro').val(),
+      bairro_id: form.find('#bairro_id').val(),
       rua: form.find('#rua').val(),
       numero: form.find('#numero').val(),
       valor: form.find('#valor').val()
@@ -156,7 +177,7 @@ var appClientes = function () {
 
   function cleanForm (form) {
     selectedItem = null;
-    $('form').find('input').val('');
+    $('form').find('input').prop('disabled', false).val('');
   }
 
   function buildEnderecoRow (data) {
@@ -186,140 +207,78 @@ var appClientes = function () {
   }
 
   function setupAutocomplete () {
-      var substringMatcher = function(strs) {
-        return function findMatches(q, cb) {
-          var matches, substringRegex;
-       
-          // an array that will be populated with substring matches
-          matches = [];
-       
-          // regex used to determine if a string contains the substring `q`
-          substrRegex = new RegExp(q, 'i');
-       
-          // iterate through the pool of strings and for any string that
-          // contains the substring `q`, add it to the `matches` array
-          $.each(strs, function(i, str) {
-            if (substrRegex.test(str)) {
-              // the typeahead jQuery plugin expects suggestions to a
-              // JavaScript object, refer to typeahead docs for more info
-              matches.push({ value: str });
-            }
-          });
-       
-          cb(matches);
-        };
+    var substringMatcher = function(items) {
+      return function findMatches(q, cb) {
+        var matches, substringRegex;
+     
+        // an array that will be populated with substring matches
+        matches = [];
+     
+        // regex used to determine if a string contains the substring `q`
+        console.log('q:',q);
+        substrRegex = new RegExp(q, 'i');
+     
+        // iterate through the pool of strings and for any string that
+        // contains the substring `q`, add it to the `matches` array
+        $.each(items, function(i, item) {
+          if (substrRegex.test(item.bairro)) {
+            // the typeahead jQuery plugin expects suggestions to a
+            // JavaScript object, refer to typeahead docs for more info
+            matches.push(item);
+          }
+        });
+     
+        cb(matches);
       };
+    };
 
-      loadBairros(function (bairros) {
-        $('#bairro').typeahead({
-          hint: true,
-          highlight: true,
-          minLength: 1
-        },
-        {
-          name: 'bairros',
-          displayKey: 'value',
-          source: substringMatcher(bairros)
-        });
+    loadBairros(function (err, bairros) {
+      if (err) console.log(err);
+      
+      $('#bairro').typeahead({
+        hint: true,
+        highlight: true,
+        minLength: 1
+      },
+      {
+        name: 'bairros',
+        displayKey: 'bairro',
+        source: substringMatcher(bairros)
       });
-
-      loadRuas(function (ruas) {
-        $('#rua').typeahead({
-          hint: true,
-          highlight: true,
-          minLength: 1
-        },
-        {
-          name: 'ruas',
-          displayKey: 'value',
-          source: substringMatcher(ruas)
-        });
-      });
-       
+    });
   }
 
   function loadBairros (cb) {
-    app.db.loadData('enderecos', function (err, data) {
-      if (err) return cb(err);
-
-      var bairros = data.map(function (item) { return item.bairro; });
-
-      cb(bairros);
-    });
-  }
-
-  function loadRuas (cb) {
-    app.db.loadData('enderecos', function (err, data) {
-      if (err) return cb(err);
-
-      var ruas = data.map(function (item) { return item.rua; });
-
-      cb(ruas);
-    });
+    app.db.loadData('enderecos', cb);
   }
 
   function loadFrete () {
     var cliente = getItemFromForm();
-    if (!cliente.bairro && !cliente.rua) {
+    console.log('bairro:',cliente.bairro);
+    if (!cliente.bairro) {
       $('#valor').prop('disabled', false).val('');
       return;
     }
 
-    var whereBairroRua = function (data) {
+    var whereBairro = function (data) {
       var pattBairro = new RegExp('^' + cliente.bairro + '$', 'i');
-      var pattRua = new RegExp('^' + cliente.rua + '$', 'i');
 
-      var foundBairro = false;
-      if (cliente.bairro) foundBairro = pattBairro.test(data.bairro);
-      if (!foundBairro && cliente.rua && !pattRua.test(data.rua)) return false;
-      
-      return true;  
+      return (cliente.bairro && pattBairro.test(data.bairro));  
     };
 
-    app.db.filter(whereBairroRua, 'enderecos', function (err, data) {
+    app.db.filter(whereBairro, 'enderecos', function (err, data) {
       if (err) return;
 
       if (!data || !data.length) {
-        $('#valor').prop('disabled', false).val('');
+        form.find('#valor').prop('disabled', false).val('');
+        form.find('#bairro_id').val('');
         return;
       }
 
-      $('#valor').prop('disabled', true);
-      var valor = 0;
+      var form = $('form');
 
-      if (data.length === 1) valor = data[0].valor;
-
-      if (!valor) {
-        // try to get by bairro and rua
-        data.forEach(function (item) {
-          if (item.bairro === cliente.bairro && item.rua === cliente.rua) {
-            valor = item.valor;
-            return;
-          }
-        });
-      }
-
-      if (!valor) {
-        // try to get by bairro
-        data.forEach(function (item) {
-          if (item.bairro === cliente.bairro) {
-            valor = item.valor;
-            return;
-          }
-        });
-      }
-
-      if (!valor) {
-        // try to get by rua
-        data.forEach(function (item) {
-          if (item.rua === cliente.rua) {
-            valor = item.valor;
-            return;
-          }
-        });
-      }
-
-      $('#valor').val(valor);
+      form.find('#valor').prop('disabled', true).val(data[0].valor);
+      form.find('#bairro_id').val(data[0].id);
     });
   }
 
