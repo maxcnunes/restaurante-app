@@ -37,7 +37,7 @@ var appDB = function () {
       
       data.push(item);
 
-      saveChanges(file, data, cb);
+      saveChanges(file, data, item, cb);
     });    
   }
 
@@ -53,7 +53,7 @@ var appDB = function () {
       item.id = id;
       data[index] = item;
 
-      saveChanges(file, data, cb);
+      saveChanges(file, data, item, cb);
     });    
   }
 
@@ -66,15 +66,15 @@ var appDB = function () {
       var index = getIndexById(id, data);
       if (typeof index !== 'undefined') data.splice(index, 1);
 
-      saveChanges(file, data, cb);
+      saveChanges(file, data, null, cb);
     });    
   }
 
-  function  saveChanges (file, data, cb) {
+  function  saveChanges (file, data, item, cb) {
     fs.writeFile(file, JSON.stringify(data, null, 2), function(err) {
       if (err) return cb('Error: ' + err);
 
-      cb();
+      cb(null, item);
     });
   }
 

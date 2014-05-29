@@ -1,5 +1,5 @@
 var appClientes = function () {
-  var selectedItem;
+  var selectedItem, bairrosList = [];
 
   function setupEvents () {
     $('form').on('click', '#save', app.common.action(save));
@@ -49,6 +49,14 @@ var appClientes = function () {
       load();
       cleanForm();
       changeButtonSaveType();
+      reloadBairros();
+    });
+  }
+
+  function reloadBairros () {
+    app.models.bairro.getAll(function (err, bairros) {
+      if (err) console.log(err);
+      bairrosList = bairros;
     });
   }
 
@@ -148,32 +156,32 @@ var appClientes = function () {
   }
 
   function setupAutocomplete () {
-    var substringMatcher = function(items) {
-      return function findMatches(q, cb) {
-        var matches, substringRegex;
-     
-        // an array that will be populated with substring matches
-        matches = [];
-     
-        // regex used to determine if a string contains the substring `q`
-        substrRegex = new RegExp(q, 'i');
-     
-        // iterate through the pool of strings and for any string that
-        // contains the substring `q`, add it to the `matches` array
-        $.each(items, function(i, item) {
-          if (substrRegex.test(item.bairro)) {
-            // the typeahead jQuery plugin expects suggestions to a
-            // JavaScript object, refer to typeahead docs for more info
-            matches.push(item);
-          }
-        });
-     
-        cb(matches);
-      };
-    };
+    function findMatches(q, cb) {
+      var matches, substringRegex;
+   
+      // an array that will be populated with substring matches
+      matches = [];
+   
+      // regex used to determine if a string contains the substring `q`
+      substrRegex = new RegExp(q, 'i');
+   
+      // iterate through the pool of strings and for any string that
+      // contains the substring `q`, add it to the `matches` array
+      $.each(bairrosList, function(i, item) {
+        if (substrRegex.test(item.bairro)) {
+          // the typeahead jQuery plugin expects suggestions to a
+          // JavaScript object, refer to typeahead docs for more info
+          matches.push(item);
+        }
+      });
+   
+      cb(matches);
+    }
 
     app.models.bairro.getAll(function (err, bairros) {
       if (err) console.log(err);
+
+      bairrosList = bairros;
 
       $('#bairro').typeahead({
         hint: true,
@@ -183,12 +191,13 @@ var appClientes = function () {
       {
         name: 'bairros',
         displayKey: 'bairro',
-        source: substringMatcher(bairros)
+        source: findMatches
       });
     });
   }
 
   function loadFrete () {
+    var form = $('form');
     var cliente = getItemFromForm();
 
     if (!cliente.bairro) {
@@ -210,8 +219,6 @@ var appClientes = function () {
         form.find('#bairro_id').val('');
         return;
       }
-
-      var form = $('form');
 
       form.find('#valor').prop('disabled', true).val(data[0].valor);
       form.find('#bairro_id').val(data[0].id);

@@ -19,6 +19,7 @@ var appModelCliente = function () {
       bairros.forEach(function (bairro) {
         if (cliente.bairro_id === bairro.id) {
           cliente.bairro = bairro.bairro;
+          cliente.valor = bairro.valor;
           return;
         }
       });
@@ -29,13 +30,30 @@ var appModelCliente = function () {
   function save (cliente, selectedItem, cb) {
     if (!validate(cliente)) return cb('Campos inválidos');
 
+    var bairro = {
+      bairro: cliente.bairro,
+      valor: cliente.valor
+    };
+
     // we do not store bairro's name, only bairro's id
     delete cliente.bairro;
+    delete cliente.valor;
 
-    if (!selectedItem) 
-      app.db.create(cliente, repository, cb);
-    else
-      app.db.update(selectedItem.id, cliente, repository, cb);
+    function saveCliente (err, bairro) {
+      if (err) return cb(err);
+      if (bairro) cliente.bairro_id = bairro.id;
+      
+      if (!selectedItem) 
+        app.db.create(cliente, repository, cb);
+      else
+        app.db.update(selectedItem.id, cliente, repository, cb);
+    }
+
+    // save only cliente
+    if (cliente.bairro_id) return saveCliente();
+    
+    // save bairro then cliente
+    app.models.bairro.save(bairro, null, saveCliente);
   }
 
   function validate (cliente) {
@@ -46,7 +64,7 @@ var appModelCliente = function () {
   function find (cliente, where, cb) {
     var items = [];
     var searchTerm = where || buildSearchTerm(cliente);
-    
+
     getAll(function (err, clientes) {
       if (err) return cb(err);
 

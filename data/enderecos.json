@@ -18,5 +18,20 @@
     "bairro": "bairro 4",
     "valor": "11,25",
     "id": "131161ba-d5c8-440e-a212-e4e00e089417"
+  },
+  {
+    "bairro": "bairro 5",
+    "valor": "12,23",
+    "id": "a0ad86b0-d21f-4c71-adfd-bdbfd8d066e1"
+  },
+  {
+    "bairro": "bairro 6",
+    "valor": "23,45",
+    "id": "16d1136c-3c8a-41ae-b18d-07c571f652ac"
+  },
+  {
+    "bairro": "bairro 7",
+    "valor": "12,23",
+    "id": "79f4ecef-daab-48c7-a187-8bc7cd0c90e5"
   }
 ]
