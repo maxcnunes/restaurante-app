@@ -5,7 +5,8 @@ var app = {
   clientes: appClientes(),
   enderecos: appEnderecos(),
   models: {
-    bairro: appModelBairro()
+    bairro: appModelBairro(),
+    cliente: appModelCliente()
   }
 };
 

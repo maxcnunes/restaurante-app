@@ -39,7 +39,7 @@ var appEnderecos = function () {
   }
 
   function search () {
-    app.models.bairro.find(getItemFromForm(), loadTable);
+    app.models.bairro.find(getItemFromForm(), null, loadTable);
   }
 
   function getItemFromForm () {

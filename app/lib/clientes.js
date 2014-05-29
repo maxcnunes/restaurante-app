@@ -2,12 +2,12 @@ var appClientes = function () {
   var selectedItem;
 
   function setupEvents () {
-    $('form').on('click', '#save', save);
-    $('form').on('click', '#cancel', cancel);
-    $('form').on('click', '#search', search);
-    $('table').on('click', '.edit-item', edit);
-    $('table').on('click', '.remove-item', remove);
-    $('form').on('blur', '#bairro', loadFrete);
+    $('form').on('click', '#save', app.common.action(save));
+    $('form').on('click', '#cancel', app.common.action(cancel));
+    $('form').on('click', '#search', app.common.action(search));
+    $('table').on('click', '.edit-item', app.common.action(edit));
+    $('table').on('click', '.remove-item', app.common.action(remove));
+    $('form').on('blur', '#bairro', app.common.action(loadFrete));
   }
 
   function init () {
@@ -16,17 +16,9 @@ var appClientes = function () {
     load();
   }
 
-  function load () {
-    app.db.loadData('clientes', function (err, data) {
-      if (err) return;
-
-      loadBairros(function (err, bairros) {
-        if (err) console.log(err);
-
-        mapBairroOnCliente(data, bairros);
-        loadTable(data);
-      });
-    });
+  function load (err) {
+    if (err) return console.log(err);
+    app.models.cliente.getAll(loadTable);
   }
 
   function mapBairroOnCliente (clientes, bairros) {
@@ -41,55 +33,27 @@ var appClientes = function () {
     });
   }
 
-  function loadTable (data) {
+  function loadTable (err, data) {
+    if (err) return console.log(err);
+
     $('table#result tbody').html('');
     data.forEach(function (item) {
       $('table#result tbody').append(buildEnderecoRow(item));
     });
   }
 
-  function save (event) {
-    event.preventDefault();
-
-    var cliente = getItemFromForm();
-
-    if (!validate(cliente)) {
-      alert('Campos inválidos');
-      return;
-    }
-
-    // we do not store bairro's name, only bairro's id
-    delete cliente.bairro;
-
-    var onSave = function (err) {
-      if (err) return console.log(err);
+  function save () {
+    app.models.cliente.save(getItemFromForm(), selectedItem, function (err) {
+      if (err) return alert(err);
 
       load();
       cleanForm();
       changeButtonSaveType();
-    };
-
-    if (!selectedItem) 
-      app.db.create(cliente, 'clientes', onSave);
-    else
-      app.db.update(selectedItem.id, cliente, 'clientes', onSave);
-  }
-
-  function validate (cliente) {
-    if ((!cliente.bairro && !cliente.rua) || !cliente.valor) return false;
-    return true;
-  }
-
-  function search (event) {
-    event.preventDefault();
-
-    var searchTerm = buildSearchTerm();
-
-    app.db.filter(searchTerm, 'clientes', function (err, data) {
-      if (err) return;
-
-      loadTable(data);
     });
+  }
+
+  function search () {
+    app.models.cliente.find(getItemFromForm(), null, loadTable);
   }
 
   function getItemFromForm () {
@@ -106,14 +70,12 @@ var appClientes = function () {
     };
   }
 
-  function cancel (event) {
-    event.preventDefault();
+  function cancel () {
     cleanForm();
     changeButtonSaveType();
   }
 
-  function edit (event) {
-    event.preventDefault();
+  function edit () {
     var btn = $(this);
 
     getSelectedItem(btn);
@@ -131,17 +93,12 @@ var appClientes = function () {
   }
 
   function remove () {
-    event.preventDefault();
     var btn = $(this);
 
     getSelectedItem(btn);
     
     if (confirm('Deseja remover este item?')) {
-      app.db.remove(selectedItem.id, 'clientes', function (err) {
-        if (err) return console.log(err);
-
-        load();
-      });
+      app.models.cliente.remove(selectedItem, load);
     }
   }
 
@@ -156,22 +113,6 @@ var appClientes = function () {
       rua: tr.find('.rua').text(),
       numero: tr.find('.numero').text(),
       valor: tr.find('.valor').text().match(/R\$ (.*)/i)[1]
-    };
-  }
-
-  function buildSearchTerm () {
-    var cliente = getItemFromForm();
-
-    return function where (data) {
-      var pattBairro = new RegExp(cliente.bairro, 'i');
-      var pattRua = new RegExp(cliente.rua, 'i');
-      var pattValor = new RegExp(cliente.valor, 'i');
-
-      if (cliente.bairro && !pattBairro.test(data.bairro)) return false;
-      if (cliente.rua && !pattRua.test(data.rua)) return false;
-      if (cliente.valor && !pattValor.test(data.valor)) return false;
-      
-      return true;
     };
   }
 
@@ -215,7 +156,6 @@ var appClientes = function () {
         matches = [];
      
         // regex used to determine if a string contains the substring `q`
-        console.log('q:',q);
         substrRegex = new RegExp(q, 'i');
      
         // iterate through the pool of strings and for any string that
@@ -232,9 +172,9 @@ var appClientes = function () {
       };
     };
 
-    loadBairros(function (err, bairros) {
+    app.models.bairro.getAll(function (err, bairros) {
       if (err) console.log(err);
-      
+
       $('#bairro').typeahead({
         hint: true,
         highlight: true,
@@ -248,13 +188,9 @@ var appClientes = function () {
     });
   }
 
-  function loadBairros (cb) {
-    app.db.loadData('enderecos', cb);
-  }
-
   function loadFrete () {
     var cliente = getItemFromForm();
-    console.log('bairro:',cliente.bairro);
+
     if (!cliente.bairro) {
       $('#valor').prop('disabled', false).val('');
       return;
@@ -266,8 +202,8 @@ var appClientes = function () {
       return (cliente.bairro && pattBairro.test(data.bairro));  
     };
 
-    app.db.filter(whereBairro, 'enderecos', function (err, data) {
-      if (err) return;
+    app.models.bairro.find(cliente, whereBairro, function (err, data) {
+      if (err) return console.log(err);
 
       if (!data || !data.length) {
         form.find('#valor').prop('disabled', false).val('');

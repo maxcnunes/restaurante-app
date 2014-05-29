@@ -1,18 +1,17 @@
 var appModelBairro = function () {
+  var repository = 'enderecos';
 
   function getAll (cb) {
-    app.db.loadData('enderecos', cb);
+    app.db.loadData(repository, cb);
   }
 
   function save (endereco, selectedItem, cb) {
-    if (!validate(endereco)) {
-      return cb('Campos inválidos');
-    }
+    if (!validate(endereco)) return cb('Campos inválidos');
 
     if (!selectedItem) 
-      app.db.create(endereco, 'enderecos', cb);
+      app.db.create(endereco, repository, cb);
     else
-      app.db.update(selectedItem.id, endereco, 'enderecos', cb);
+      app.db.update(selectedItem.id, endereco, repository, cb);
   }
 
   function validate (endereco) {
@@ -20,14 +19,14 @@ var appModelBairro = function () {
     return true;
   }
 
-  function find (endereco, cb) {
-    var searchTerm = buildSearchTerm(endereco);
+  function find (endereco, where, cb) {
+    var searchTerm = where || buildSearchTerm(endereco);
 
-    app.db.filter(searchTerm, 'enderecos', cb);
+    app.db.filter(searchTerm, repository, cb);
   }
 
   function remove (selectedItem, cb) {
-    app.db.remove(selectedItem.id, 'enderecos', cb);
+    app.db.remove(selectedItem.id, repository, cb);
   }
 
   function buildSearchTerm (endereco) {
@@ -45,9 +44,7 @@ var appModelBairro = function () {
   return {
     getAll: getAll,
     save: save,
-    validate: validate,
     find: find,
-    remove: remove,
-    buildSearchTerm: buildSearchTerm
+    remove: remove
   };
 };
