@@ -27,6 +27,19 @@ var appDB = function () {
     });    
   }
 
+  function findById (id, name, cb) {
+    var file = 'data/' + name + '.json';
+    
+    loadData(name, function (err, data) {
+      if (err) return cb(err);
+
+      var index = getIndexById(id, data);
+      if (typeof index === 'undefined') return cb('Not found');
+
+      cb(null, data[index]);
+    });    
+  }
+
   function create (item, name, cb) {
     var file = 'data/' + name + '.json';
     
@@ -89,6 +102,7 @@ var appDB = function () {
     filter: filter,
     create: create,
     update: update,
-    remove: remove
+    remove: remove,
+    findById: findById
   };
 };

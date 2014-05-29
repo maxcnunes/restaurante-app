@@ -75,7 +75,13 @@ var appEnderecos = function () {
     getSelectedItem(btn);
     
     if (confirm('Deseja remover este item?')) {
-      app.models.bairro.remove(selectedItem, load);
+      app.models.cliente.findByBairroId(selectedItem.id, function (err, clientes) {
+        if (clientes && clientes.length) {
+          alert('Exclusāo nāo permitida. Existe um cliente cadastrado com esse bairro.');
+          return;
+        }
+        app.models.bairro.remove(selectedItem, load);
+      });
     }
   }
 

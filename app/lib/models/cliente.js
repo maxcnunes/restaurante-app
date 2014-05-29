@@ -106,10 +106,19 @@ var appModelCliente = function () {
     };
   }
 
+  function findByBairroId (id, cb) {
+    var whereBairro = function (data) {
+      return data.bairro_id === id;  
+    };
+
+    app.models.cliente.find(null, whereBairro, cb);
+  }
+
   return {
     getAll: getAll,
     save: save,
     find: find,
-    remove: remove
+    remove: remove,
+    findByBairroId: findByBairroId
   };
 };
