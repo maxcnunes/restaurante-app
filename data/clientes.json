@@ -67,5 +67,13 @@
     "rua": "Rua 2",
     "numero": "123",
     "id": "c149bdee-21ff-4d08-b245-b4c95f32bd4d"
+  },
+  {
+    "nome": "test",
+    "telefone": "1222-2222",
+    "bairro_id": "67a82bb0-7099-4ade-afb3-125c4eccab04",
+    "rua": "test",
+    "numero": "112",
+    "id": "13b5e18d-6325-42cc-b477-5a0d294c2d2c"
   }
 ]
