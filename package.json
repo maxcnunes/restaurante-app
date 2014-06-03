@@ -1,5 +1,6 @@
 {
   "name": "restaurante-app",
+  "version": "0.0.1",
   "main": "app/views/index.html",
   "window": {
     "toolbar": true,
@@ -12,5 +13,11 @@
   },
   "dependencies": {
     "node-uuid": "^1.4.1"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-node-webkit-builder": "^0.1.21",
+    "grunt-contrib-copy": "^0.5.0",
+    "grunt-contrib-compress": "^0.9.1"
   }
 }

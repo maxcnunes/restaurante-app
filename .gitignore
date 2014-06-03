@@ -1,1 +1,5 @@
 node_modules
+build
+bin/cache
+bin/releases
+.DS_Store
