@@ -2,13 +2,14 @@ var appDB = function () {
   var fs = require('fs'),
       uuid = require('node-uuid'),
       isWin = /^win/i.test(require('os').platform()),
-      dataPath = isWin ? 'c:\\restaurante-app' : process.env.HOME + '/restaurante-app/';
+      path = require('path'),
+      dataPath = isWin ? 'c:\\restaurante-app' : path.join(process.env.HOME, 'restaurante-app');
 
   if (!fs.existsSync(dataPath)) alert('Diretório nāo encontrado: ' + dataPath);
 
 
   function loadData (name, cb) {
-    var file = dataPath + name + '.json';
+    var file = getDataFilePath(name);
     if (!fs.existsSync(file)) return cb('Arquivo nāo encontrado: ' + file);
 
     fs.readFile(file, 'utf8', function (err, data) {
@@ -20,7 +21,7 @@ var appDB = function () {
 
   function filter (condition, name, cb) {
     var items = [];
-    var file = dataPath + name + '.json';
+    var file = getDataFilePath(name);
     
     loadData(name, function (err, data) {
       if (err) return cb(err);
@@ -34,7 +35,7 @@ var appDB = function () {
   }
 
   function findById (id, name, cb) {
-    var file = dataPath + name + '.json';
+    var file = getDataFilePath(name);
     
     loadData(name, function (err, data) {
       if (err) return cb(err);
@@ -47,7 +48,7 @@ var appDB = function () {
   }
 
   function create (item, name, cb) {
-    var file = dataPath + name + '.json';
+    var file = getDataFilePath(name);
     
     loadData(name, function (err, data) {
       if (err) return cb(err);
@@ -61,7 +62,7 @@ var appDB = function () {
   }
 
   function update (id, item, name, cb) {
-    var file = dataPath + name + '.json';
+    var file = getDataFilePath(name);
     
     loadData(name, function (err, data) {
       if (err) return cb(err);
@@ -101,6 +102,10 @@ var appDB = function () {
     for (var i = 0; i < data.length; i++) {
       if (data[i].id === id) return i;
     }
+  }
+
+  function getDataFilePath (name) {
+    return path.join(dataPath, name + '.json');
   }
 
   return {
